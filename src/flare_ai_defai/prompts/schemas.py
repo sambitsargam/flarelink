@@ -16,31 +16,22 @@ from enum import Enum
 from string import Template
 from typing import TypedDict
 
+from pydantic import BaseModel
+
 
 class SemanticRouterResponse(str, Enum):
     """
-    Enumeration of possible semantic routing outcomes for user queries.
-
-    This enum defines the various types of operations that can be triggered
-    based on user input analysis. Each value represents a specific action
-    or response type that the system can handle.
-
-    Attributes:
-        GENERATE_ACCOUNT: Route to account generation workflow
-        SEND_TOKEN: Route to token sending workflow
-        SWAP_TOKEN: Route to token swapping workflow
-        REQUEST_ATTESTATION: Route to attestation request handling
-        CONVERSATIONAL: Route to general conversational response
+    Enum for semantic router response categories.
     """
 
-    GENERATE_ACCOUNT = "GenerateAccount"
-    SEND_TOKEN = "SendToken"
-    SWAP_TOKEN = "SwapToken"
-    REQUEST_ATTESTATION = "RequestAttestation"
-    CONVERSATIONAL = "Conversational"
+    CHECK_BALANCE = "CHECK_BALANCE"
+    SEND_TOKEN = "SEND_TOKEN"
+    SWAP_TOKEN = "SWAP_TOKEN"
+    REQUEST_ATTESTATION = "REQUEST_ATTESTATION"
+    CONVERSATIONAL = "CONVERSATIONAL"
 
 
-class TokenSendResponse(TypedDict):
+class TokenSendResponse(BaseModel):
     """
     Type definition for token sending operation parameters.
 
@@ -56,7 +47,7 @@ class TokenSendResponse(TypedDict):
     amount: float
 
 
-class TokenSwapResponse(TypedDict):
+class TokenSwapResponse(BaseModel):
     """
     Type definition for token swapping operation parameters.
 
@@ -71,6 +62,12 @@ class TokenSwapResponse(TypedDict):
 
     from_token: str
     to_token: str
+    amount: float
+
+
+class CrossChainSwapResponse(BaseModel):
+    from_token: str = "FLR"  # Always FLR
+    to_token: str = "USDC"  # Always USDC
     amount: float
 
 
@@ -178,3 +175,19 @@ class Prompt:
                 msg = f"Missing required inputs: {missing_keys}"
                 raise ValueError(msg) from e
             raise
+
+
+class PortfolioAnalysisResponse(BaseModel):
+    """
+    Type definition for portfolio analysis response.
+
+    Defines the structure for portfolio analysis results including
+    risk assessment and reasoning.
+
+    Attributes:
+        risk_score (float): Risk score from 1-10
+        text (str): Detailed analysis and reasoning
+    """
+
+    risk_score: float
+    text: str

@@ -55,7 +55,9 @@ def create_app() -> FastAPI:
         - simulate_attestation: Boolean flag for attestation simulation
     """
     app = FastAPI(
-        title="AI Agent API", version=settings.api_version, redirect_slashes=False
+        title="Flare AI DeFi",
+        description="AI-powered DeFi agent on Flare Network",
+        version="0.1.0",
     )
 
     # Configure CORS middleware with settings from configuration
@@ -67,16 +69,21 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # Initialize router with service providers
+    # Initialize chat router
     chat = ChatRouter(
-        ai=GeminiProvider(api_key=settings.gemini_api_key, model=settings.gemini_model),
-        blockchain=FlareProvider(web3_provider_url=settings.web3_provider_url),
+        ai=GeminiProvider(
+            api_key=settings.gemini_api_key,
+            model=settings.gemini_model,
+            knowledge_base_path=settings.knowledge_base_path,
+        ),
+        blockchain=FlareProvider(web3_provider_url=settings.flare_rpc_url),
         attestation=Vtpm(simulate=settings.simulate_attestation),
         prompts=PromptService(),
     )
 
     # Register chat routes with API
     app.include_router(chat.router, prefix="/api/routes/chat", tags=["chat"])
+
     return app
 
 

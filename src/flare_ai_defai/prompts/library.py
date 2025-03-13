@@ -21,6 +21,8 @@ Example:
 import structlog
 
 from flare_ai_defai.prompts.schemas import (
+    CrossChainSwapResponse,
+    PortfolioAnalysisResponse,
     Prompt,
     SemanticRouterResponse,
     TokenSendResponse,
@@ -28,7 +30,9 @@ from flare_ai_defai.prompts.schemas import (
 )
 from flare_ai_defai.prompts.templates import (
     CONVERSATIONAL,
+    CROSS_CHAIN_SWAP,
     GENERATE_ACCOUNT,
+    PORTFOLIO_ANALYSIS,
     REMOTE_ATTESTATION,
     SEMANTIC_ROUTER,
     TOKEN_SEND,
@@ -82,6 +86,8 @@ class PromptLibrary:
         - conversational: For general user interactions
         - request_attestation: For remote attestation requests
         - tx_confirmation: For transaction confirmation
+        - cross_chain_swap: For cross-chain swap operations
+        - portfolio_analysis: For analyzing portfolio images
 
         This method is called automatically during instance initialization.
         """
@@ -148,6 +154,24 @@ class PromptLibrary:
                 response_schema=None,
                 response_mime_type=None,
                 category="account",
+            ),
+            Prompt(
+                name="cross_chain_swap",
+                description="Extract cross-chain swap parameters from user input",
+                template=CROSS_CHAIN_SWAP,
+                required_inputs=["user_input"],
+                response_schema=CrossChainSwapResponse,
+                response_mime_type="application/json",
+                category="defai",
+            ),
+            Prompt(
+                name="portfolio_analysis",
+                description="Analyze portfolio image and generate risk assessment",
+                template=PORTFOLIO_ANALYSIS,
+                required_inputs=None,
+                response_schema=PortfolioAnalysisResponse,
+                response_mime_type=None,
+                category="analysis",
             ),
         ]
 
