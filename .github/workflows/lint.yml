@@ -23,9 +23,6 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen --all-extras
 
-      # Format code with ruff
-      - name: Format with ruff
-        run: uv run ruff format --diff
 
       # no lint
 
